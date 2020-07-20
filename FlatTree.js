@@ -125,7 +125,7 @@ export default ({data, keyField, style, onPressItem, renderItem, itemStyle, arro
 			<FlatList data={treeData}
 			          contentContainerStyle={treeData.length > 0 ? {} : {width: '100%', height: '100%'}}
 			          renderItem={_renderItem}
-			          keyExtractor={item => item.hasOwnProperty(keyField) ? item[keyField] : item}
+			          /*keyExtractor={item => item.hasOwnProperty(keyField) ? item[keyField] : item}*/
 			          ListEmptyComponent={listEmptyView || _listEmptyView}
 			/>
 		</View>
