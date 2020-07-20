@@ -46,7 +46,7 @@ const listEmptyView = ({text = 'No Items'}) => {
 
 export default () => {
 	return (
-		<FlatTree data={treeData} keyField="uuid" itemStyle={styles.itemStyle}  style={styles.container}
+		<FlatTree data={treeData} itemStyle={styles.itemStyle}  style={styles.container}
 		          renderItem={item => <Text style={{color: COLOR.textPrimary}}>{item.name}</Text>}
 		          arrowRight={<Icon name="caret-right" color={COLOR.textPrimary}/>}
 		          arrowDown={<Icon name="caret-down" color={COLOR.textPrimary}/>}
