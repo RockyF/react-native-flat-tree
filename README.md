@@ -61,14 +61,14 @@ export default () => {
 # Props
 | prop | type | required | default |
 | ---- | ---- | ----     | ----    |
-| data | Array | [x] |  |
-| style | any | [ ] |  |
+| data | Array | true |  |
+| style | any | false |  |
 | onPressItem | (item)=>void | false |  |
-| renderItem | react-node | [x] |  |
-| filter | (item, index, data)=>boolean | [ ] |  |
-| itemStyle | any | [ ] |  |
-| arrowRight | react-node | [ ] | + |
-| arrowDown | react-node | [ ] | - |
-| listEmptyView | react-node | [ ] | builtin |
-| indentDistance | number | [ ] | 15 |
-| childrenField | string | [ ] | 'children' |
+| renderItem | react-node | true |  |
+| filter | (item, index, data)=>boolean | false |  |
+| itemStyle | any | false |  |
+| arrowRight | react-node | false | + |
+| arrowDown | react-node | false | - |
+| listEmptyView | react-node | false | builtin |
+| indentDistance | number | false | 15 |
+| childrenField | string | false | 'children' |
