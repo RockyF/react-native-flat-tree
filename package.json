@@ -1,6 +1,6 @@
 {
   "name": "react-native-flat-tree",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Tree view extends FlatList",
   "main": "FlatTree.js",
   "license": "MIT",

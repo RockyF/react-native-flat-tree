@@ -15,15 +15,15 @@ const EXPANDED = '__expanded';
 const DEPTH = '__depth';
 const INDEX_PATH = '__indexPath';
 
-const Item = ({data, onPress, onPressArrow, renderItem, itemStyle, arrowRight, arrowDown, indentDistance = 15, childrenField}) => {
+const Item = ({data, onPress, onPressArrow, renderItem, filter, itemStyle, arrowRight, arrowDown, indentDistance = 15, childrenField}) => {
 	const {item, item: {__depth = 0, __expanded}} = data;
-	const children = item[childrenField];
+	const hasChildren = item[childrenField].filter(filter).length > 0;
 	return (
 		<TouchableOpacity activeOpacity={0.8} style={[styles.treeItem, itemStyle, {marginLeft: __depth * indentDistance}]}
 		                  onPress={() => onPress && onPress(item, data)}>
 			<TouchableOpacity activeOpacity={0.8} style={styles.arrowWrapper}
 			                  onPress={() => onPressArrow && onPressArrow(data)}>
-				{children && children.length > 0 ? (
+				{hasChildren > 0 ? (
 					__expanded ? (arrowDown || <Text>{'-'}</Text>) : (arrowRight || <Text>{'+'}</Text>)
 				) : null}
 			</TouchableOpacity>
@@ -129,6 +129,7 @@ export default ({data, style, onPressItem, renderItem, filter, itemStyle, arrowR
 		      arrowDown={arrowDown}
 		      indentDistance={indentDistance}
 		      childrenField={childrenField}
+		      filter={filter}
 		/>
 	);
 
