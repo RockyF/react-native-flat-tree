@@ -57,3 +57,18 @@ export default () => {
 }
 ...
 ```
+
+# Props
+| prop | type | required | default |
+| ---- | ---- | ----     | ----    |
+| data | Array | [x] |  |
+| style | any | [ ] |  |
+| onPressItem | (item)=>void | false |  |
+| renderItem | react-node | [x] |  |
+| filter | (item, index, data)=>boolean | [ ] |  |
+| itemStyle | any | [ ] |  |
+| arrowRight | react-node | [ ] | + |
+| arrowDown | react-node | [ ] | - |
+| listEmptyView | react-node | [ ] | builtin |
+| indentDistance | number | [ ] | 15 |
+| childrenField | string | [ ] | 'children' |

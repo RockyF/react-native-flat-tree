@@ -15,8 +15,9 @@ const EXPANDED = '__expanded';
 const DEPTH = '__depth';
 const INDEX_PATH = '__indexPath';
 
-const Item = ({data, onPress, onPressArrow, renderItem, itemStyle, arrowRight, arrowDown, indentDistance = 15}) => {
-	const {item, item: {children, __depth = 0, __expanded}} = data;
+const Item = ({data, onPress, onPressArrow, renderItem, itemStyle, arrowRight, arrowDown, indentDistance = 15, childrenField}) => {
+	const {item, item: {__depth = 0, __expanded}} = data;
+	const children = item[childrenField];
 	return (
 		<TouchableOpacity activeOpacity={0.8} style={[styles.treeItem, itemStyle, {marginLeft: __depth * indentDistance}]}
 		                  onPress={() => onPress && onPress(item, data)}>
@@ -39,56 +40,55 @@ const _listEmptyView = ({text = 'Empty'}) => {
 	);
 };
 
-export default ({data, style, onPressItem, renderItem, itemStyle, arrowRight, arrowDown, listEmptyView, indentDistance}) => {
+function dealItem(item, depth, indexPath){
+	Object.defineProperty(item, DEPTH, {
+		get() {
+			return depth;
+		},
+		configurable: true,
+		enumerable: false,
+	});
+	Object.defineProperty(item, INDEX_PATH, {
+		get() {
+			return indexPath + '';
+		},
+		configurable: true,
+		enumerable: false,
+	});
+}
+
+export default ({data, style, onPressItem, renderItem, filter, itemStyle, arrowRight, arrowDown, listEmptyView, indentDistance, childrenField = 'children'}) => {
 	const [treeData, setTreeData] = useState([]);
 
 	useEffect(() => {
 		if (data) {
+			let newData = data.concat();
+			if(filter){
+				newData = newData.filter(filter);
+			}
 			for (let i = 0, li = data.length; i < li; i++) {
 				const child = data[i];
-
 				delete child[EXPANDED];
-				Object.defineProperty(child, DEPTH, {
-					get() {
-						return 0;
-					},
-					configurable: true,
-					enumerable: false,
-				});
-				Object.defineProperty(child, INDEX_PATH, {
-					get() {
-						return i.toString();
-					},
-					configurable: true,
-					enumerable: false,
-				});
+				dealItem(child, 0, i);
 			}
 
-			setTreeData(data.concat());
+			setTreeData(newData);
 		}
-	}, []);
+	}, [data]);
 
 	function onPressArrow({index, item}) {
-		if (item.children && item.children.length > 0) {
+		let children = item[childrenField];
+		if(filter){
+			children = children.filter(filter);
+		}
+
+		if (children && children.length > 0) {
 			let expended = item.hasOwnProperty(EXPANDED) && item[EXPANDED];
 
-			for (let i = 0, li = item.children.length; i < li; i++) {
-				const child = item.children[i];
+			for (let i = 0, li = children.length; i < li; i++) {
+				const child = children[i];
 				delete child[EXPANDED];
-				Object.defineProperty(child, DEPTH, {
-					get() {
-						return (item[DEPTH] || 0) + 1;
-					},
-					configurable: true,
-					enumerable: false,
-				});
-				Object.defineProperty(child, INDEX_PATH, {
-					get() {
-						return (item[INDEX_PATH] || '0') + '/' + i;
-					},
-					configurable: true,
-					enumerable: false,
-				});
+				dealItem(child, (item[DEPTH] || 0) + 1, (item[INDEX_PATH] || '0') + '/' + i);
 			}
 
 			let newTreeData = treeData.concat();
@@ -106,7 +106,7 @@ export default ({data, style, onPressItem, renderItem, itemStyle, arrowRight, ar
 				}
 				newTreeData.splice(index + 1, deleteCount);
 			} else {
-				newTreeData.splice(index + 1, 0, ...item.children);
+				newTreeData.splice(index + 1, 0, ...children);
 			}
 			setTreeData(newTreeData);
 			Object.defineProperty(item, EXPANDED, {
@@ -128,6 +128,7 @@ export default ({data, style, onPressItem, renderItem, itemStyle, arrowRight, ar
 		      arrowRight={arrowRight}
 		      arrowDown={arrowDown}
 		      indentDistance={indentDistance}
+		      childrenField={childrenField}
 		/>
 	);
 
