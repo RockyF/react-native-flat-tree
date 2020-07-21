@@ -1,10 +1,21 @@
 {
   "name": "react-native-flat-tree",
-  "version": "1.0.6",
+  "version": "1.0.7",
+  "description": "Tree view extends FlatList",
   "main": "FlatTree.js",
   "license": "MIT",
   "dependencies": {
     "react": "^16.13.1",
     "react-native": "^0.63.1"
+  },
+  "keywords": [
+    "react-native",
+    "flatlist",
+    "tree"
+  ],
+  "repository": "https://github.com/RockyF/react-native-flat-tree",
+  "homepage": "https://github.com/RockyF/react-native-flat-tree#readme",
+  "bugs": {
+    "url": "https://github.com/RockyF/react-native-flat-tree/issues"
   }
 }
