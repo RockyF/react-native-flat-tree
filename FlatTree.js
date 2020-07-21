@@ -15,11 +15,17 @@ const EXPANDED = '__expanded';
 const DEPTH = '__depth';
 const INDEX_PATH = '__indexPath';
 
-const Item = ({data, onPress, onPressArrow, renderItem, filter, itemStyle, arrowRight, arrowDown, indentDistance = 15, childrenField}) => {
-	const {item, item: {__depth = 0, __expanded}} = data;
+const Item = ({
+	              data, onPress, onPressArrow, renderItem, filter,
+	              itemStyle, itemHighlightStyle, highlightCurrent, selectedIndex,
+	              arrowRight, arrowDown, indentDistance = 15, childrenField,
+              }) => {
+	const {index, item, item: {__depth = 0, __expanded}} = data;
 	const hasChildren = item[childrenField].filter(filter).length > 0;
+	const highlighted = highlightCurrent && selectedIndex === index;
 	return (
-		<TouchableOpacity activeOpacity={0.8} style={[styles.treeItem, itemStyle, {marginLeft: __depth * indentDistance}]}
+		<TouchableOpacity activeOpacity={0.8}
+		                  style={[styles.treeItem, highlighted ? itemHighlightStyle : itemStyle, {marginLeft: __depth * indentDistance}]}
 		                  onPress={() => onPress && onPress(item, data)}>
 			<TouchableOpacity activeOpacity={0.8} style={styles.arrowWrapper}
 			                  onPress={() => onPressArrow && onPressArrow(data)}>
@@ -27,7 +33,7 @@ const Item = ({data, onPress, onPressArrow, renderItem, filter, itemStyle, arrow
 					__expanded ? (arrowDown || <Text>{'-'}</Text>) : (arrowRight || <Text>{'+'}</Text>)
 				) : null}
 			</TouchableOpacity>
-			{renderItem ? renderItem(item, data) : <View/>}
+			{renderItem ? renderItem(item, data, highlighted) : <View/>}
 		</TouchableOpacity>
 	)
 };
@@ -40,7 +46,7 @@ const _listEmptyView = ({text = 'Empty'}) => {
 	);
 };
 
-function dealItem(item, depth, indexPath){
+function dealItem(item, depth, indexPath) {
 	Object.defineProperty(item, DEPTH, {
 		get() {
 			return depth;
@@ -57,13 +63,19 @@ function dealItem(item, depth, indexPath){
 	});
 }
 
-export default ({data, style, onPressItem, renderItem, filter, itemStyle, arrowRight, arrowDown, listEmptyView, indentDistance, childrenField = 'children'}) => {
+export default ({
+	                data, style, onPressItem, renderItem, filter,
+	                itemStyle, itemHighlightStyle, arrowRight, arrowDown, listEmptyView,
+	                indentDistance, childrenField = 'children',
+	                highlightCurrent,
+                }) => {
 	const [treeData, setTreeData] = useState([]);
+	const [selectedIndex, setSelectedIndex] = useState(-1);
 
 	useEffect(() => {
 		if (data) {
 			let newData = data.concat();
-			if(filter){
+			if (filter) {
 				newData = newData.filter(filter);
 			}
 			for (let i = 0, li = data.length; i < li; i++) {
@@ -71,14 +83,13 @@ export default ({data, style, onPressItem, renderItem, filter, itemStyle, arrowR
 				delete child[EXPANDED];
 				dealItem(child, 0, i);
 			}
-
 			setTreeData(newData);
 		}
 	}, [data]);
 
 	function onPressArrow({index, item}) {
 		let children = item[childrenField];
-		if(filter){
+		if (filter) {
 			children = children.filter(filter);
 		}
 
@@ -117,19 +128,33 @@ export default ({data, style, onPressItem, renderItem, filter, itemStyle, arrowR
 				enumerable: false,
 			})
 		}
+
+		setSelectedIndex(index);
 	}
 
+	function onPress(item, data) {
+		setSelectedIndex(data.index);
+
+		onPressItem && onPressItem(item, data);
+	}
+
+	const itemProps = {
+		renderItem,
+		itemStyle,
+		itemHighlightStyle,
+		highlightCurrent,
+		arrowRight,
+		arrowDown,
+		indentDistance,
+		childrenField,
+		filter,
+		onPressArrow,
+		selectedIndex,
+		onPress,
+	};
 	const _renderItem = (data) => (
 		<Item data={data}
-		      onPress={onPressItem}
-		      onPressArrow={onPressArrow}
-		      renderItem={renderItem}
-		      itemStyle={itemStyle}
-		      arrowRight={arrowRight}
-		      arrowDown={arrowDown}
-		      indentDistance={indentDistance}
-		      childrenField={childrenField}
-		      filter={filter}
+		      {...itemProps}
 		/>
 	);
 

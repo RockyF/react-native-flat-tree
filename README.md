@@ -72,3 +72,5 @@ export default () => {
 | listEmptyView | react-node | false | builtin |
 | indentDistance | number | false | 15 |
 | childrenField | string | false | 'children' |
+| highlightCurrent | boolean | false | false |
+| itemHighlightStyle | any | false |  |
