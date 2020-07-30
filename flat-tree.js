@@ -21,7 +21,11 @@ const Item = ({
 	              arrowRight, arrowDown, indentDistance = 15, childrenField,
               }) => {
 	const {index, item, item: {__depth = 0, __expanded}} = data;
-	const hasChildren = item[childrenField].filter(filter).length > 0;
+	let children = item[childrenField];
+	if(children && filter){
+		children = children.filter(filter);
+	}
+	const hasChildren = children && children.length > 0;
 	const highlighted = highlightCurrent && selectedIndex === index;
 	return (
 		<TouchableOpacity activeOpacity={0.8}
